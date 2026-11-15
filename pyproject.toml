@@ -1,0 +1,23 @@
+[project]
+name = "couponjp-mcp"
+version = "0.1.0"
+description = "MCP server: find stores in Japan where the free CouponJP tourist coupon works, compare costs after tax-free refund fees"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = ["mcp>=1.9", "certifi"]
+keywords = ["mcp", "japan", "travel", "coupon", "tax-free", "shopping"]
+
+[project.urls]
+Homepage = "https://couponjp.com/"
+Repository = "https://github.com/couponjp/couponjp-mcp"
+
+[project.scripts]
+couponjp-mcp = "couponjp_mcp.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/couponjp_mcp"]
