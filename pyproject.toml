@@ -1,6 +1,6 @@
 [project]
 name = "couponjp-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "MCP server: find stores in Japan where the free CouponJP tourist coupon works, compare costs after tax-free refund fees"
 readme = "README.md"
 license = "MIT"

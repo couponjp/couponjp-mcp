@@ -27,16 +27,19 @@ RO = ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=Tr
 
 @mcp.tool(annotations=RO)
 def find_coupon_stores(place: str | None = None, latitude: float | None = None, longitude: float | None = None,
-                       radius_km: float = 1.0, brand: str | None = None, language: str = "en", limit: int = 10) -> dict:
-    """Find stores in Japan near a place where a free CouponJP tourist coupon works, nearest first.
+                       radius_km: float = 1.0, brand: str | None = None, language: str = "en", limit: int = 10,
+                       one_per_chain_first: bool = True) -> dict:
+    """Find stores in Japan near a place where a free CouponJP tourist coupon works.
 
     place: a shopping area (e.g. "Namba", "Shinjuku", "Ginza", "Shinsaibashi"), a city ("Osaka") or a train station name,
     in English, Japanese, Chinese or Korean. Or give latitude and longitude instead.
     brand: optional chain name to filter (e.g. "Don Quijote", "Sugi Pharmacy", "Bic Camera").
     language: answer language code (en, zh-CN, zh-TW, ja, ko, th, vi, id, ms, fil, hi, fr, de, es, it, pt, ru).
+    one_per_chain_first: list the nearest store of each chain first (default), then the rest; false = strict distance order.
     Returns each store's brand, discount, address, straight-line distance, coupon page link and Google Maps link.
     """
-    return core.find_stores(place=place, lat=latitude, lng=longitude, radius_km=radius_km, brand=brand, lang=language, limit=limit)
+    return core.find_stores(place=place, lat=latitude, lng=longitude, radius_km=radius_km, brand=brand, lang=language, limit=limit,
+                            mix_brands=one_per_chain_first)
 
 
 @mcp.tool(annotations=RO)

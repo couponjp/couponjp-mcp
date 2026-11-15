@@ -240,7 +240,10 @@ def store_out(s, d_km: float | None, lang: str, utm: str | None) -> dict:
 
 
 def find_stores(place: str | None = None, lat: float | None = None, lng: float | None = None, radius_km: float = 1.0,
-                brand: str | None = None, lang: str = "en", limit: int = 10, utm: str | None = None) -> dict:
+                brand: str | None = None, lang: str = "en", limit: int = 10, utm: str | None = None,
+                mix_brands: bool = True) -> dict:
+    """Stores within radius_km, nearest first. mix_brands: list the nearest store of each chain first, then the rest,
+    so a busy area doesn't return five branches of the same drugstore; chains whose coupon is being renewed go last."""
     db = DB.get()
     lang = lang_of(lang)
     center = None
@@ -271,6 +274,15 @@ def find_stores(place: str | None = None, lat: float | None = None, lng: float |
         if d <= radius_km:
             near.append((d, s))
     near.sort(key=lambda x: x[0])
+    if mix_brands and not bkey:
+        firsts, rest, later, seen = [], [], [], set()
+        for d, s in near:
+            if db.brands[s[1]].get("coupon_renewal"):      # coupon being renewed: can't be used today, list last
+                later.append((d, s))
+            else:
+                (rest if s[1] in seen else firsts).append((d, s))
+                seen.add(s[1])
+        near = firsts + rest + later
     c_name = center.get("name")
     return {
         "center": {"type": center["type"], "name": pick(c_name, lang) if isinstance(c_name, dict) else c_name,
